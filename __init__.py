@@ -44,12 +44,18 @@ class MainWindowExtension(WindowExtension):
         my_targets = ["text/html", "utf8-string", "text", "string"]
         clipboard = gtk.Clipboard()
         targets = clipboard.wait_for_targets()
+        data = ""
         for my_target in my_targets:
             if my_target in targets:
-                return clipboard.wait_for_contents(my_target).data.decode("utf_16").replace("\x00", "")
+                data = clipboard.wait_for_contents(my_target).data
+                data = data.replace(b"\x00", b"").replace(b"\xff", b"").replace(b"\xfe", b"").decode("utf-8")
+                return data
             elif my_target.upper() in targets:
-                return clipboard.wait_for_contents(my_target.upper()).data
-        return ""
+                data = clipboard.wait_for_contents(my_target.upper()).data
+                data = data.replace(b"\x00", b"").replace(b"\xff", b"").replace(b"\xfe", b"").decode("utf-8")
+                return data
+
+        return data
     
     @action(_('_Paste from HTML'), accelerator="<ctrl><shift>v")
     def pastefh(self):
