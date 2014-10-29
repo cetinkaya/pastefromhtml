@@ -5,7 +5,9 @@ pastefromhtml is a Zim plugin that lets you paste lists, links, and text from ht
 
 #### Installation
 
-You can install pastefromhtml plugin in Zim, by creating a `pastefromhtml` folder with files `htmlcdparser.py` and `__init__.py` and placing the folder into your zim/plugins directory. In Linux, you can place `pastefromhtml` folder in  `~/.local/share/zim/plugins` directory. 
+You can install pastefromhtml plugin in Zim, by creating a folder with files `htmlcdparser.py` and `__init__.py`, then placing that folder into your zim/plugins directory. 
+
+For installation in Linux, you can place a folder (with files `htmlcdparser.py` and `__init__.py` inside) in  `~/.local/share/zim/plugins` directory. 
 
 pastefromhtml plugin can also be installed by cloning the github repository in zim/plugins directory: 
 
