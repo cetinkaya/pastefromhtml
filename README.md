@@ -14,7 +14,7 @@ cd ~/.local/share/zim/plugins
 git clone https://github.com/cetinkaya/pastefromhtml.git
 ```
 
-### Use
+#### Use
 
 pastefromhtml adds a menu entry (Tools / Paste from HTML) as well as a key shortcut (SHIFT + CTRL + V) in Zim. 
 
