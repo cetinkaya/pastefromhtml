@@ -18,6 +18,6 @@ git clone https://github.com/cetinkaya/pastefromhtml.git
 
 #### Use
 
-pastefromhtml adds a menu entry (`Tools / Paste from HTML`) as well as a key shortcut (`SHIFT + CTRL + V`) in Zim. 
+pastefromhtml adds a menu entry (`Tools / Paste from HTML`) as well as a keyboard shortcut (`ctrl + shift + v`) in Zim. 
 
-After you copy lists/links/text in your browser, paste them into Zim by clicking on the menu entry or by using the shortcut `SHIFT + CTRL + V`.
+After you copy lists/links/text in your browser, paste them into Zim by clicking on the menu entry or by using the shortcut `ctrl + shift + v`.
