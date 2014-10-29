@@ -100,7 +100,7 @@ class HTMLCDParser(HTMLParser):
             alt = assoc("alt", attrs)
             if alt == None:
                 alt = "Image"
-            self.zim_str += "[{0}|{1}]".format(src, alt)
+            self.zim_str += "[[{0}|{1}]]".format(src, alt)
 
 
     def handle_endtag(self, tag):
@@ -128,7 +128,7 @@ class HTMLCDParser(HTMLParser):
             alt = assoc("alt", attrs)
             if alt == None:
                 alt = "Image"
-            self.zim_str += "[{0}|{1}]".format(src, alt)
+            self.zim_str += "[[{0}|{1}]]".format(src, alt)
             
     def to_zim(self, html_str):
         self.feed(html_str)
