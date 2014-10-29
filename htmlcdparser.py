@@ -132,5 +132,4 @@ class HTMLCDParser(HTMLParser):
             
     def to_zim(self, html_str):
         self.feed(html_str)
-        rexp = re.compile("[\n]+")
-        return re.sub(rexp, "\n", self.zim_str)
+        return re.sub(r'\n+', "\n", self.zim_str).strip("\n")
