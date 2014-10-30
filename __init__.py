@@ -41,17 +41,14 @@ class MainWindowExtension(WindowExtension):
     '''
 
     def get_clipboard_data(self):
-        my_targets = ["text/html", "utf8-string", "text", "string"]
+        my_targets = ["text/html", "TEXT/HTML", "utf8-string", "UTF8-STRING",
+                      "text", "TEXT", "string", "STRING"]
         clipboard = gtk.Clipboard()
         targets = clipboard.wait_for_targets()
         data = ""
         for my_target in my_targets:
             if my_target in targets:
                 data = clipboard.wait_for_contents(my_target).data
-                data = data.replace(b"\x00", b"").replace(b"\xff", b"").replace(b"\xfe", b"").decode("utf-8")
-                return data
-            elif my_target.upper() in targets:
-                data = clipboard.wait_for_contents(my_target.upper()).data
                 data = data.replace(b"\x00", b"").replace(b"\xff", b"").replace(b"\xfe", b"").decode("utf-8")
                 return data
 
