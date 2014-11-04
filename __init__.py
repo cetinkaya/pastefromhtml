@@ -50,7 +50,10 @@ class MainWindowExtension(WindowExtension):
             for my_target in my_targets:
                 if my_target in targets:
                     data = clipboard.wait_for_contents(my_target).data
-                    data = data.decode('utf_16').replace('\x00', '')
+                    if data.find("\xff") != -1:
+                        data = data.decode('utf_16').replace('\x00', '')
+                    elif data.find("\x00") != -1:
+                        data = data.decode('utf_8').replace('\x00', '')
                     return data
 
         return data
