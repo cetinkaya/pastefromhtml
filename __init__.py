@@ -46,11 +46,12 @@ class MainWindowExtension(WindowExtension):
         clipboard = gtk.Clipboard()
         targets = clipboard.wait_for_targets()
         data = ""
-        for my_target in my_targets:
-            if my_target in targets:
-                data = clipboard.wait_for_contents(my_target).data
-                data = data.decode('utf_16').replace('\x00', '')
-                return data
+        if targets is not None:
+            for my_target in my_targets:
+                if my_target in targets:
+                    data = clipboard.wait_for_contents(my_target).data
+                    data = data.decode('utf_16').replace('\x00', '')
+                    return data
 
         return data
     
