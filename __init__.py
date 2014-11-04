@@ -49,7 +49,7 @@ class MainWindowExtension(WindowExtension):
         for my_target in my_targets:
             if my_target in targets:
                 data = clipboard.wait_for_contents(my_target).data
-                data = data.replace(b"\x00", b"").replace(b"\xff", b"").replace(b"\xfe", b"").decode("utf-8")
+                data = data.decode('utf_16').replace('\x00', '')
                 return data
 
         return data
