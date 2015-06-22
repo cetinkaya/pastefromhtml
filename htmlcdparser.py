@@ -78,7 +78,7 @@ class HTMLCDParser(HTMLParser):
             self.zim_str += self.beg[tag]
         if tag == "a":
             href = assoc("href", attrs)
-            if href == None:
+            if href is None:
                 href = "#"
             self.zim_str += "[[{}|".format(href)
         elif tag == "ol":
@@ -95,10 +95,10 @@ class HTMLCDParser(HTMLParser):
                 self.zim_str += "* "
         elif tag == "img":
             src = assoc("src", attrs)
-            if src == None:
+            if src is None:
                 src = "#"
             alt = assoc("alt", attrs)
-            if alt == None:
+            if alt is None:
                 alt = "Image"
             self.zim_str += "[[{0}|{1}]]".format(src, alt)
 
@@ -117,16 +117,16 @@ class HTMLCDParser(HTMLParser):
         elif tag == "input":
             if assoc("type", attrs) in ["checkbox", "radio"]:
                 is_checked = assoc("checked", attrs)
-                if is_checked != None and is_checked.lower() == "true":
+                if not (is_checked is None) and is_checked.lower() == "true":
                     self.zim_str += "[*] "
                 else:
                     self.zim_str += "[ ] "
         elif tag == "img":
             src = assoc("src", attrs)
-            if src == None:
+            if src is None:
                 src = "#"
             alt = assoc("alt", attrs)
-            if alt == None:
+            if alt is None:
                 alt = "Image"
             self.zim_str += "[[{0}|{1}]]".format(src, alt)
             
