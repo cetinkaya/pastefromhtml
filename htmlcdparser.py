@@ -91,6 +91,16 @@ class HTMLCDParser(HTMLParser):
                 self.zim_str += "{}. ".format(self.item_no)
             else:
                 self.zim_str += "* "
+        elif tag == "br":
+            if not self.processing_a:
+                self.zim_str += "\n\n"
+        elif tag == "input":
+            if assoc("type", attrs) in ["checkbox", "radio"]:
+                is_checked = assoc("checked", attrs)
+                if not (is_checked is None) and is_checked.lower() == "true":
+                    self.zim_str += "[*] "
+                else:
+                    self.zim_str += "[ ] "
         elif tag == "img":
             src = assoc("src", attrs)
             if src is None:
