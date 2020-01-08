@@ -1,4 +1,4 @@
-# Copyright 2014 Ahmet Cetinkaya
+# Copyright 2014-2020 Ahmet Cetinkaya
 
 # This file is part of pastefromhtml.
 # pastefromhtml is free software: you can redistribute it and/or modify
@@ -12,7 +12,7 @@
 # You should have received a copy of the GNU General Public License
 # along with pastefromhtml. If not, see <http://www.gnu.org/licenses/>.
 
-from HTMLParser import HTMLParser
+from html.parser import HTMLParser
 import re
 
 def assoc(key, pairs):
@@ -26,7 +26,7 @@ def assoc(key, pairs):
 # HTML Clipboard Data Parser
 class HTMLCDParser(HTMLParser):
     def __init__(self):
-        HTMLParser.__init__(self) # super().__init__() for Pyhon 3
+        super().__init__()
         self.zim_str = ""
         self.beg = {"h1": "== ",
                     "h2": "=== ",
@@ -43,8 +43,6 @@ class HTMLCDParser(HTMLParser):
                     "mark": "__",
                     "pre": "''",
                     "strike": "~~",
-                    "p": "",
-                    "div": "",
                     "ol": "",
                     "ul": "",
                     "li": ""}
@@ -64,14 +62,13 @@ class HTMLCDParser(HTMLParser):
                     "mark": "__",
                     "pre": "''",
                     "strike": "~~",
-                    "p": "\n",
-                    "div": "\n",
                     "a": "]]",
                     "ol": "\n",
                     "ul": "\n",
                     "li": "\n"}
         self.list_type = "ol"
         self.item_no = 0
+        self.processing_a = False
 
     def handle_starttag(self, tag, attrs):
         if tag in self.beg.keys():
@@ -81,6 +78,7 @@ class HTMLCDParser(HTMLParser):
             if href is None:
                 href = "#"
             self.zim_str += "[[{}|".format(href)
+            self.processing_a = True
         elif tag == "ol":
             self.list_type = "ol"
             self.item_no = 0
@@ -106,6 +104,11 @@ class HTMLCDParser(HTMLParser):
     def handle_endtag(self, tag):
         if tag in self.end.keys():
             self.zim_str += self.end[tag]
+        if tag == "a":
+            self.processing_a = False
+        if not self.processing_a:
+            if tag == "p" or tag == "div":
+                self.zim_str += "\n"
 
     def handle_data(self, data):
         space_removed_data = data # re.sub(r"[\s]+", " ", data)
@@ -129,7 +132,7 @@ class HTMLCDParser(HTMLParser):
             if alt is None:
                 alt = "Image"
             self.zim_str += "[[{0}|{1}]]".format(src, alt)
-            
+
     def to_zim(self, html_str):
-        self.feed(html_str)
+        self.feed(re.sub(r'\s+', " ", html_str))
         return re.sub(r'\n+', "\n", self.zim_str).strip("\n")
