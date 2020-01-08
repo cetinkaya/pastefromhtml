@@ -116,7 +116,8 @@ class HTMLCDParser(HTMLParser):
 
     def handle_startendtag(self, tag, attrs):
         if tag == "br":
-            self.zim_str += "\n\n"
+            if not self.processing_a:
+                self.zim_str += "\n\n"
         elif tag == "input":
             if assoc("type", attrs) in ["checkbox", "radio"]:
                 is_checked = assoc("checked", attrs)
