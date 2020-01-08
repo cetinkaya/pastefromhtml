@@ -56,7 +56,7 @@ class PasteFromHTMLMainWindowExtension(MainWindowExtension):
                 elif b'\x00' in data:
                     return (my_target_string, data.decode('utf_8').replace('\x00', ''))
                 return (my_target_string, data.decode('utf_8'))
-        return data
+        return None
 
     @action(_('_Paste from HTML'), accelerator="<ctrl><shift>v")
     def pastefh(self):
@@ -67,6 +67,7 @@ class PasteFromHTMLMainWindowExtension(MainWindowExtension):
             target = target_and_data[0]
             data = target_and_data[1]
             if target in ["text/html", "TEXT/HTML"]:
+                buffer.insert_at_cursor(data + "\n\n")
                 buffer.insert_at_cursor(h.to_zim(data))
             else:
                 buffer.insert_at_cursor(data)
