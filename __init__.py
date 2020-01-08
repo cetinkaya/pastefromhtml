@@ -67,7 +67,6 @@ class PasteFromHTMLMainWindowExtension(MainWindowExtension):
             target = target_and_data[0]
             data = target_and_data[1]
             if target in ["text/html", "TEXT/HTML"]:
-                buffer.insert_at_cursor(data + "\n\n")
                 buffer.insert_at_cursor(h.to_zim(data))
             else:
                 buffer.insert_at_cursor(data)
