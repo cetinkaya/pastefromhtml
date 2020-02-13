@@ -1,7 +1,7 @@
 pastefromhtml
 =============
 
-pastefromhtml is a Zim plugin that lets you paste lists, links, and text from html clipboard data. 
+pastefromhtml is a Zim plugin that lets you paste lists, links, text, and now images (thanks to an anonymous commit) from html clipboard data. 
 
 #### Installation
 
@@ -23,4 +23,4 @@ To enable the plugin, click on the menu entry `Edit / Preferences`, then go to `
 
 pastefromhtml adds a menu entry (`Tools / Paste from HTML`) as well as a keyboard shortcut (`ctrl + shift + v`) in Zim. 
 
-After you copy lists/links/text in your browser, paste them into Zim by clicking on the menu entry or by using the shortcut `ctrl + shift + v`.
+After you copy lists/links/text/images in your browser, paste them into Zim by clicking on the menu entry or by using the shortcut `ctrl + shift + v`.
