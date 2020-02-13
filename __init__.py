@@ -60,6 +60,7 @@ class PasteFromHTMLMainWindowExtension(MainWindowExtension):
 
     @action(_('_Paste from HTML'), accelerator="<ctrl><shift>v")
     def pastefh(self):
+        folder = self.window.notebook.get_attachments_dir(self.window.pageview.page) 
         buffer = self.window.pageview.textview.get_buffer()
         h = HTMLCDParser()
         target_and_data = self.get_clipboard_target_and_data()
@@ -67,6 +68,9 @@ class PasteFromHTMLMainWindowExtension(MainWindowExtension):
             target = target_and_data[0]
             data = target_and_data[1]
             if target in ["text/html", "TEXT/HTML"]:
-                buffer.insert_at_cursor(h.to_zim(data))
+                buffer.insert_at_cursor(h.to_zim(data, folder))
+                cursor = self.window.pageview.get_cursor_pos()
+                self.window.pageview.set_page(self.window.pageview.page)
+                self.window.pageview.set_cursor_pos(cursor)
             else:
                 buffer.insert_at_cursor(data)
