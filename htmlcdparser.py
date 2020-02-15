@@ -302,8 +302,8 @@ class HTMLCDParser(HTMLParser):
             self.pre_data = ""
             self.inside_pre = False             
             return
-        #Remove enter before tr
-        if tag == "tr":       
+        #Remove enter before tr, td, th
+        if tag == "tr" or tag == "td" or tag == "th":       
             if self.zim_str.endswith("\n"):
                 self.zim_str = self.zim_str[:len(self.zim_str) - len("\n")]
         if tag == "p":                
