@@ -34,7 +34,7 @@ def get_url(url, name):
     req.add_unredirected_header('User-agent', 'Mozilla')
     f.write(urllib.request.urlopen(req).read())
     f.close()
-    
+
 # HTML Clipboard Data Parser
 class HTMLCDParser(HTMLParser):
     def __init__(self):
@@ -44,7 +44,7 @@ class HTMLCDParser(HTMLParser):
                     "h2": "===== ",
                     "h3": "==== ",
                     "h4": "=== ",
-                    "h5": "== ",                    
+                    "h5": "== ",
                     "iframe": "[[",
                     "strong": "**",
                     "b": "**",
@@ -84,7 +84,7 @@ class HTMLCDParser(HTMLParser):
                     "h2": " =====\n",
                     "h3": " ====\n",
                     "h4": " ===\n",
-                    "h5": " ==\n",                    
+                    "h5": " ==\n",
                     "iframe": "]]",
                     "strong": "**",
                     "b": "**",
@@ -113,7 +113,7 @@ class HTMLCDParser(HTMLParser):
                     "th": "",
                     "td": "",
                     "sup": "}",
-                    "sub": "}",                    
+                    "sub": "}",
                     "figure": "\n",
                     "figcaption": "\n"}
         self.list_type = "ol"
@@ -125,65 +125,65 @@ class HTMLCDParser(HTMLParser):
         self.inside_tag = "" #Indicate label on which we are
         self.start_tag = "" #Initial tag in case we have to delete it
         self.del_tag = ""
-        self.tag_attrib = "" #Tag Attribute Value       
+        self.tag_attrib = "" #Tag Attribute Value
         self.folder = None
         self.a_href = "" #Link of a tag
         self.inside_li = False
         self.list_level = -1
         self.inside_iframe = False
         self.inside_span = False
-        self.inside_dl = False      
-        self.inside_table = False        
-        
-    def handle_starttag(self, tag, attrs):        
-        #If we are in a non-nestable tag we do nothing        
-        if self.inside_tag and not (self.inside_tag == "a" and tag == "img" and self.a_href) and not(self.inside_tag == "th" or self.inside_tag == "td" or self.inside_tag == "dt" or self.inside_tag == "dd") and not (tag == "a" and (self.inside_tag == "b" or self.inside_tag == "strong" or self.inside_tag == "i" or self.inside_tag == "em" or self.inside_tag == "u" or self.inside_tag == "ins" or self.inside_tag == "mark" or self.inside_tag == "strike" or self.inside_tag == "del") and self.zim_str.endswith(self.beg[self.inside_tag])):             
-            return 
+        self.inside_dl = False
+        self.inside_table = False
+
+    def handle_starttag(self, tag, attrs):
+        #If we are in a non-nestable tag we do nothing
+        if self.inside_tag and not (self.inside_tag == "a" and tag == "img" and self.a_href) and not(self.inside_tag == "th" or self.inside_tag == "td" or self.inside_tag == "dt" or self.inside_tag == "dd") and not (tag == "a" and (self.inside_tag == "b" or self.inside_tag == "strong" or self.inside_tag == "i" or self.inside_tag == "em" or self.inside_tag == "u" or self.inside_tag == "ins" or self.inside_tag == "mark" or self.inside_tag == "strike" or self.inside_tag == "del") and self.zim_str.endswith(self.beg[self.inside_tag])):
+            return
         if tag == "blockquote":
             self.inside_blockquote = True
-        #If the tag a is in a non-nestable one, tag a prevails and the previous one is deleted. In block sentences it is not done                          
+        #If the tag a is in a non-nestable one, tag a prevails and the previous one is deleted. In block sentences it is not done
         if tag == "a" and self.inside_tag and ((self.inside_tag != "pre" and self.inside_tag != "code")):
             self.del_tag = self.inside_tag
-            self.zim_str = self.zim_str[:len(self.zim_str)-len(self.start_tag)]            
+            self.zim_str = self.zim_str[:len(self.zim_str)-len(self.start_tag)]
         #Initialize non-nestable tag
         if  tag != "td" and tag != "dd" and self.beg.get(tag) or tag == "a" and not self.inside_tag:
             self.inside_tag = tag
-        if (tag == "pre" or tag == "code"): #If pre in p        
-            self.inside_pre = True  
+        if (tag == "pre" or tag == "code"): #If pre in p
+            self.inside_pre = True
         if tag in list(self.beg.keys()):
             #Add blank when tag not start line
             if self.zim_str.endswith(("\n", "(", "[", "\t", "\"", " ", "/", '\xa0')):
                 blank = ""
             else:
                 blank = " "
-            self.zim_str += blank + self.beg[tag]            
-            self.start_tag = self.beg[tag] #Store start tag to delete it could be somewhere else            
+            self.zim_str += blank + self.beg[tag]
+            self.start_tag = self.beg[tag] #Store start tag to delete it could be somewhere else
         if tag == "p":
             self.inside_p = True
             if self.inside_blockquote:
                 self.zim_str += "\t"
         elif tag == "del":
-            datetime = assoc("datetime", attrs)            
+            datetime = assoc("datetime", attrs)
             if datetime is not None:
                 self.tag_attrib = " (" + datetime + ")"
         elif tag == "abbr":
-            title = assoc("title", attrs)            
+            title = assoc("title", attrs)
             if title is not None:
                 self.tag_attrib = " (" + title + ")"
         elif tag == "q":
-            cite = assoc("cite", attrs)            
+            cite = assoc("cite", attrs)
             if cite is not None:
                 self.tag_attrib = " ([[#|" + cite + "]])"
             self.zim_str += '"'
         elif tag == "time":
-            datetime = assoc("datetime", attrs)            
+            datetime = assoc("datetime", attrs)
             if datetime is not None:
                 self.tag_attrib = " (" + datetime + ")"
         elif tag == "a":
-            href = assoc("href", attrs)            
+            href = assoc("href", attrs)
             self.a_href = href #ref of tag
             if href is None:
-                href = "#"            
+                href = "#"
              #Add blank when tag not start line
             if self.zim_str.endswith(("\n", "(", "[", "\t", "\"", " ", "/", '\xa0')):
                 blank = ""
@@ -194,7 +194,7 @@ class HTMLCDParser(HTMLParser):
                 pipe = "\|"
             else:
                 pipe = "|"
-            self.zim_str += blank + "[[{}".format(href) + pipe            
+            self.zim_str += blank + "[[{}".format(href) + pipe
         elif tag == "ol":
             #if we are in a definition list the tab is not put to the dd
             if self.inside_dl and self.zim_str.endswith("\t"):
@@ -216,12 +216,12 @@ class HTMLCDParser(HTMLParser):
             self.item_no = 0
             self.list_level += 1
         elif tag == "li":
-            #If you are in a blockquote add tab        
+            #If you are in a blockquote add tab
             if self.inside_blockquote:
                 self.zim_str += "\t"
             #If tag li no close add enter
             if self.inside_li and (self.zim_str and not self.zim_str.endswith("\n")):
-                self.zim_str += "\n"                
+                self.zim_str += "\n"
             self.item_no += 1
             self.zim_str += "\t" * self.list_level #Add level
             if self.list_type == "ol":
@@ -239,13 +239,13 @@ class HTMLCDParser(HTMLParser):
             if src != "#" and not self.inside_table:
                 #If the image and the link match, only the image remains and the label is deleted
                 if self.inside_tag == "a" and src == self.a_href:
-                    self.zim_str = self.zim_str[:len(self.zim_str)-len("[[" + self.a_href + "|")]                    
+                    self.zim_str = self.zim_str[:len(self.zim_str)-len("[[" + self.a_href + "|")]
                 #Si img inside a an <> image then prevails a
                 if self.inside_tag == "a" and src != self.a_href:
                     return
                 img_name = os.path.basename(src)
                 if not self.folder.exists():
-                    self.folder.touch()                
+                    self.folder.touch()
                 get_url(src, self.folder.path + "/" + img_name)
                 self.zim_str += "{{./" + img_name + "}}"
             else:
@@ -255,7 +255,7 @@ class HTMLCDParser(HTMLParser):
                     self.zim_str += "[[{0}|{1}]]".format(src, alt)
         elif tag == "iframe":
             self.inside_iframe = True
-            src = assoc("src", attrs)                                    
+            src = assoc("src", attrs)
             self.zim_str += "#|" + src
         elif tag == "span":
             self.inside_span = True
@@ -264,9 +264,9 @@ class HTMLCDParser(HTMLParser):
         elif tag == "table":
             self.inside_table = True
 
-    def handle_endtag(self, tag):        
+    def handle_endtag(self, tag):
         if self.inside_tag and tag != self.inside_tag and not (self.inside_tag == "th" or self.inside_tag == "td" or self.inside_tag == "dt" or self.inside_tag == "dd" ) and not (tag == "a" and (self.inside_tag == "b" or self.inside_tag == "strong" or self.inside_tag == "i" or self.inside_tag == "em" or self.inside_tag == "u" or self.inside_tag == "ins" or self.inside_tag == "mark" or self.inside_tag == "strike" or self.inside_tag == "del") and self.del_tag):
-            return        
+            return
         if tag == "blockquote":
             self.inside_blockquote = False
         #end of nestable tag
@@ -276,7 +276,7 @@ class HTMLCDParser(HTMLParser):
             if tag == "a":
                 self.a_href = ""
         #If you tag this within another non-nestable it is deleted
-        if self.del_tag == tag:                
+        if self.del_tag == tag:
             self.start_tag = ""
             self.del_tag = ""
             return
@@ -286,9 +286,9 @@ class HTMLCDParser(HTMLParser):
                 if self.zim_str.endswith("''"):
                     self.zim_str = self.zim_str[:len(self.zim_str) - 2]
                 self.pre_data = ""
-                self.inside_pre = False             
+                self.inside_pre = False
                 return
-            if self.pre_data.count('\n') > 0: 
+            if self.pre_data.count('\n') > 0:
                 #Initial tag
                 if self.zim_str.endswith("''"):
                     self.zim_str = self.zim_str[:len(self.zim_str) - 2]
@@ -300,14 +300,14 @@ class HTMLCDParser(HTMLParser):
             else:
                 self.zim_str += self.end[tag]
             self.pre_data = ""
-            self.inside_pre = False             
+            self.inside_pre = False
             return
         #Remove enter before tr, td, th
-        if tag == "tr" or tag == "td" or tag == "th":       
+        if tag == "tr" or tag == "td" or tag == "th":
             if self.zim_str.endswith("\n"):
                 self.zim_str = self.zim_str[:len(self.zim_str) - len("\n")]
-        if tag == "p":                
-            self.inside_p = False  
+        if tag == "p":
+            self.inside_p = False
         elif tag == "del" and self.tag_attrib:
             self.zim_str += self.tag_attrib
             self.tag_attrib = ""
@@ -317,7 +317,7 @@ class HTMLCDParser(HTMLParser):
         elif tag == "q":
             self.zim_str += '"'
             if self.tag_attrib:
-                self.zim_str += self.tag_attrib              
+                self.zim_str += self.tag_attrib
             if not self.inside_p:
                 self.zim_str += "\n"
             self.tag_attrib = ""
@@ -334,19 +334,19 @@ class HTMLCDParser(HTMLParser):
             self.inside_dl = False
         elif tag == "table":
             self.inside_table = False
-        if tag in list(self.end.keys()):            
-            self.start_tag = ""           
+        if tag in list(self.end.keys()):
+            self.start_tag = ""
             if tag == "li":
                 #If li empty del
                 if self.list_type == "ul" and self.zim_str.endswith("* "):
-                    self.zim_str = self.zim_str[:len(self.zim_str) - 2] 
+                    self.zim_str = self.zim_str[:len(self.zim_str) - 2]
                 elif self.list_type == "ol" and self.zim_str.endswith(str(self.item_no) + ". "):
                     self.zim_str = self.zim_str[:len(self.zim_str) - len(str(self.item_no) + ". ")]
                     self.item_no -= 1
                 #Add enter if not exists in li tag
                 elif not self.zim_str.endswith("\n"):
                     self.zim_str += "\n"
-            else:                
+            else:
                 #If we are not at a level higher than the first level of a list and not two last tag  finish in \n
                 if not ((tag == "ol" or tag == "ul") and self.list_level >= 0):
                     #If tag empty then delete
@@ -358,25 +358,25 @@ class HTMLCDParser(HTMLParser):
                             self.zim_str += self.end[tag]
             #If tag li end inside_li false
             if tag == "li" or tag == "ul" or tag == "ol":
-                 self.inside_li = False      
+                 self.inside_li = False
 
     def handle_data(self, data):
-        if self.inside_pre: #not clean                       
-            self.pre_data += data                                             
+        if self.inside_pre: #not clean
+            self.pre_data += data
         else:
             if self.inside_iframe:
                 space_removed_data = ""
-            else:      
+            else:
                 #Put as a literal syntax of zim
                 data = re.sub('(\'\'.+\'\')', r"''\1''", data)
                 data = re.sub('(\[\[.*\]\])', r"''\1''", data)
                 data = re.sub('(^=+ .+ =+)', r"''\1''", data)
-                data = re.sub('(^\t*\* )', r"''\1''", data) 
+                data = re.sub('(^\t*\* )', r"''\1''", data)
                 data = re.sub('(^\t*\[[ *x]\] )', r"''\1''", data)
                 data = re.sub('(\*\*.+\*\*)', r"''\1''", data)
                 data = re.sub('(\/\/.+\/\/)', r"''\1''", data)
-                data = re.sub('(__.+__)', r"''\1''", data)      
-                data = re.sub('(~~.+~~)', r"''\1''", data) 
+                data = re.sub('(__.+__)', r"''\1''", data)
+                data = re.sub('(~~.+~~)', r"''\1''", data)
                 data = re.sub('(\^\{.+\})', r"''\1''", data)
                 data = re.sub('(\_\{.+\})', r"''\1''", data)
                 #If we are in a span tag, rstrip does not apply
@@ -385,40 +385,40 @@ class HTMLCDParser(HTMLParser):
                 else:
                     space_removed_data = re.sub(r"[\s]+", " ", data.rstrip())
                     #If we are on a table they escape \ n and |
-                    if self.inside_table:                        
+                    if self.inside_table:
                         space_removed_data = space_removed_data.replace("|", "\|")
-                        space_removed_data = space_removed_data.replace("\n", "\\n")                            
-            self.zim_str += space_removed_data                
-    
+                        space_removed_data = space_removed_data.replace("\n", "\\n")
+            self.zim_str += space_removed_data
+
     def handle_entityref(self, name):
         if name in name2codepoint:
-            c = chr(name2codepoint[name])        
+            c = chr(name2codepoint[name])
         if self.inside_pre:
             #Add blank when tag not start line
             if self.pre_data.endswith(("\n", "(", "[", "\t", "\"", " ", "/", '\xa0')):
                 blank = ""
             else:
-                blank = " "            
+                blank = " "
             self.pre_data += blank + c
         else:
             #Add blank when tag not start line
             if self.zim_str.endswith(("\n", "(", "[", "\t", "\"", " ", "/", '\xa0')):
                 blank = ""
             else:
-                blank = " "            
-            self.zim_str += blank + c              
+                blank = " "
+            self.zim_str += blank + c
 
     def handle_charref(self, name):
         if name.startswith('x'):
             c = chr(int(name[1:], 16))
         else:
-            c = chr(int(name))  
+            c = chr(int(name))
         #Add blank when tag not start line
         if self.zim_str.endswith(("\n", "(", "[", "\t", "\"", " ", "/", '\xa0')):
             blank = ""
         else:
-            blank = " "            
-        self.zim_str += blank + c          
+            blank = " "
+        self.zim_str += blank + c
 
     def handle_startendtag(self, tag, attrs):
         if tag == "br":
@@ -440,13 +440,13 @@ class HTMLCDParser(HTMLParser):
             if src != "#" and not seld.inside_table:
                 #If the image and the link match, only the image remains and the label is deleted
                 if self.inside_tag == "a" and src == self.a_href:
-                    self.zim_str = self.zim_str[:len(self.zim_str)-len("[[" + self.a_href + "|")]                    
+                    self.zim_str = self.zim_str[:len(self.zim_str)-len("[[" + self.a_href + "|")]
                 #If img inside a an <> image then prevails a
                 if self.inside_tag == "a" and src != self.a_href:
                     return
                 img_name = os.path.basename(src)
                 if not self.folder.exists():
-                    self.folder.touch()                
+                    self.folder.touch()
                 get_url(src, self.folder.path + "/" + img_name)
                 self.zim_str += "{{./" + img_name + "}}"
             else:
@@ -456,9 +456,9 @@ class HTMLCDParser(HTMLParser):
                     self.zim_str += "[[{0}|{1}]]".format(src, alt)
         elif tag == "hr":
             self.zim_str += "-----\n"
-            
+
     def to_zim(self, html_str, folder):
-        self.folder = folder             
-        self.feed(html_str)                                   
+        self.folder = folder
+        self.feed(html_str)
         #return self.zim_str.strip() + ("\n\n" if self.zim_str.strip().endswith("|") else "")
         return re.sub(r'\n\n+', "\n\n", self.zim_str).strip() + ("\n\n" if self.zim_str.strip().endswith("|") else "")

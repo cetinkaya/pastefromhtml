@@ -60,7 +60,7 @@ class PasteFromHTMLMainWindowExtension(MainWindowExtension):
 
     @action(_('_Paste from HTML'), accelerator="<ctrl><shift>v")
     def pastefh(self):
-        folder = self.window.notebook.get_attachments_dir(self.window.pageview.page) 
+        folder = self.window.notebook.get_attachments_dir(self.window.pageview.page)
         buffer = self.window.pageview.textview.get_buffer()
         h = HTMLCDParser()
         target_and_data = self.get_clipboard_target_and_data()
