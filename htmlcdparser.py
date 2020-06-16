@@ -231,7 +231,7 @@ class HTMLCDParser(HTMLParser):
             self.inside_li = True
         elif tag == "img":
             src = assoc("src", attrs)
-            if src is None:
+            if src is None or src == "":
                 src = "#"
             alt = assoc("alt", attrs)
             if alt is None:
@@ -432,7 +432,7 @@ class HTMLCDParser(HTMLParser):
                     self.zim_str += "[ ] "
         elif tag == "img":
             src = assoc("src", attrs)
-            if src is None:
+            if src is None or src == "":
                 src = "#"
             alt = assoc("alt", attrs)
             if alt is None:
