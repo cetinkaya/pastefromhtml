@@ -437,7 +437,7 @@ class HTMLCDParser(HTMLParser):
             alt = assoc("alt", attrs)
             if alt is None:
                 alt = "Image"
-            if src != "#" and not seld.inside_table:
+            if src != "#" and not self.inside_table:
                 #If the image and the link match, only the image remains and the label is deleted
                 if self.inside_tag == "a" and src == self.a_href:
                     self.zim_str = self.zim_str[:len(self.zim_str)-len("[[" + self.a_href + "|")]
