@@ -1,4 +1,4 @@
-# Copyright 2014 Ahmet Cetinkaya
+# Copyright 2014-2022 Ahmet Cetinkaya
 
 # This file is part of pastefromhtml.
 # pastefromhtml is free software: you can redistribute it and/or modify
@@ -15,7 +15,6 @@
 from html.parser import HTMLParser
 from html.entities import name2codepoint
 import re
-import sys
 import urllib.request, urllib.error, urllib.parse
 import os
 
