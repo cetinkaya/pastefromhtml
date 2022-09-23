@@ -1,4 +1,4 @@
-# Copyright 2014-2020 Ahmet Cetinkaya
+# Copyright 2014-2022 Ahmet Cetinkaya
 
 # This file is part of pastefromhtml.
 # pastefromhtml is free software: you can redistribute it and/or modify
@@ -19,6 +19,7 @@ from zim.actions import action
 from gi.repository import Gdk, Gtk
 from .htmlcdparser import HTMLCDParser
 
+
 class PasteFromHTMLPlugin(PluginClass):
     plugin_info = {
         "name": _("Paste from HTML"),
@@ -26,6 +27,42 @@ class PasteFromHTMLPlugin(PluginClass):
         "author": "Ahmet Cetinkaya",
         "help": "Plugins:Paste from HTML"
     }
+
+
+def get_fragment(data):
+    start_tag = '<!--StartFragment-->'
+    end_tag = '<!--EndFragment-->'
+    start_tag_index = data.find(start_tag)
+    end_tag_index = data.find(end_tag)
+
+    clip_start = 0
+    clip_end = len(data)
+    if start_tag_index >= 0:
+        clip_start = start_tag_index + len(start_tag)
+    if end_tag_index >= 0:
+        clip_end = end_tag_index
+
+    return data[clip_start:clip_end]
+
+
+def get_clipboard_target_and_data():
+    clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
+    result, targets = clipboard.wait_for_targets()
+    if not result:
+        return None
+    my_target_strings = ["text/html", "TEXT/HTML", "utf8-string", "UTF8-STRING",
+                         "text", "TEXT", "string", "STRING", "HTML Format", "UTF8_STRING"]
+    target_strings = [atom.name() for atom in targets]
+    for my_target_string in my_target_strings:
+        if my_target_string in target_strings:
+            data = clipboard.wait_for_contents(Gdk.Atom.intern(my_target_string, False)).get_data()
+            if b'\xff' in data:
+                return my_target_string, data.decode('utf_16').replace('\x00', '')
+            elif b'\x00' in data:
+                return my_target_string, data.decode('utf_8').replace('\x00', '')
+            return my_target_string, data.decode('utf_8')
+    return None
+
 
 class PasteFromHTMLMainWindowExtension(MainWindowExtension):
     uimanager_xml = '''
@@ -40,34 +77,19 @@ class PasteFromHTMLMainWindowExtension(MainWindowExtension):
     </ui>
     '''
 
-    def get_clipboard_target_and_data(self):
-        clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
-        result, targets = clipboard.wait_for_targets()
-        if not result:
-                return None
-        my_target_strings = ["text/html", "TEXT/HTML", "utf8-string", "UTF8-STRING",
-                             "text", "TEXT", "string", "STRING"]
-        target_strings = [atom.name() for atom in targets]
-        for my_target_string in my_target_strings:
-            if my_target_string in target_strings:
-                data = clipboard.wait_for_contents(Gdk.Atom.intern(my_target_string, False)).get_data()
-                if b'\xff' in data:
-                    return (my_target_string, data.decode('utf_16').replace('\x00', ''))
-                elif b'\x00' in data:
-                    return (my_target_string, data.decode('utf_8').replace('\x00', ''))
-                return (my_target_string, data.decode('utf_8'))
-        return None
-
     @action(_('_Paste from HTML'), accelerator="<ctrl><shift>v")
     def pastefh(self):
         folder = self.window.notebook.get_attachments_dir(self.window.pageview.page)
         buffer = self.window.pageview.textview.get_buffer()
         h = HTMLCDParser()
-        target_and_data = self.get_clipboard_target_and_data()
+        target_and_data = get_clipboard_target_and_data()
+
         if target_and_data is not None:
             target = target_and_data[0]
             data = target_and_data[1]
-            if target in ["text/html", "TEXT/HTML"]:
+
+            if target in ["text/html", "TEXT/HTML", "HTML Format"]:
+                data = get_fragment(data)
                 buffer.insert_at_cursor(h.to_zim(data, folder))
                 cursor = self.window.pageview.get_cursor_pos()
                 self.window.pageview.set_page(self.window.pageview.page)
