@@ -242,7 +242,10 @@ class HTMLCDParser(HTMLParser):
                 #Si img inside a an <> image then prevails a
                 if self.inside_tag == "a" and src != self.a_href:
                     return
-                img_name = os.path.basename(src)
+                qmark_index = src.find('?')
+                if qmark_index < 0:
+                    qmark_index = len(src)
+                img_name = os.path.basename(src[:qmark_index])
                 if not self.folder.exists():
                     self.folder.touch()
                 get_url(src, self.folder.path + "/" + img_name)
@@ -443,7 +446,10 @@ class HTMLCDParser(HTMLParser):
                 #If img inside a an <> image then prevails a
                 if self.inside_tag == "a" and src != self.a_href:
                     return
-                img_name = os.path.basename(src)
+                qmark_index = src.find('?')
+                if qmark_index < 0:
+                    qmark_index = len(src)
+                img_name = os.path.basename(src[:qmark_index])
                 if not self.folder.exists():
                     self.folder.touch()
                 get_url(src, self.folder.path + "/" + img_name)
