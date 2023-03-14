@@ -24,3 +24,10 @@ To enable the plugin, click on the menu entry `Edit / Preferences`, then go to `
 pastefromhtml adds a menu entry (`Tools / Paste from HTML`) as well as a keyboard shortcut (`ctrl + shift + v`) in Zim. 
 
 After you copy lists/links/text/images in your browser, paste them into Zim by clicking on the menu entry or by using the shortcut `ctrl + shift + v`.
+
+
+#### Quirks
+
+##### Images inside anchor tags
+
+When pasting image tags `<img>` that are placed inside anchor tags `<a>`, the default behavior of pastefromhtml is to only paste the URL that the anchor tag refers to (unless it is the URL of the image). There is an option that can be configured so as to paste the images instead of URLs of the anchor tags. To access this option, you can click on Edit/Preferences in the menu bar, navigate to the Plugins tab, and select Paste from HTML. After that, click on the Configure button located on the right-hand side.
