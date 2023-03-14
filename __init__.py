@@ -28,6 +28,11 @@ class PasteFromHTMLPlugin(PluginClass):
         "help": "Plugins:Paste from HTML"
     }
 
+    plugin_preferences = (
+        # key, type, label, default
+        ('image_inside_a', 'bool', _('Paste images instead of links (only for image tags <img> inside anchor tags <a>)'), False),
+    )
+
 
 def get_fragment(data):
     start_tag = '<!--StartFragment-->'
@@ -65,6 +70,17 @@ def get_clipboard_target_and_data():
 
 
 class PasteFromHTMLMainWindowExtension(MainWindowExtension):
+
+    def __init__(self, plugin, window):
+        MainWindowExtension.__init__(self, plugin, window)
+        self.plugin = plugin
+        self.on_preferences_changed(self.plugin.preferences)
+        self.plugin.preferences.connect('changed', self.on_preferences_changed)
+
+    def on_preferences_changed(self, preferences):
+        print("what")
+        self.preferences = preferences
+
     uimanager_xml = '''
     <ui>
     <menubar name='menubar'>
@@ -81,7 +97,6 @@ class PasteFromHTMLMainWindowExtension(MainWindowExtension):
     def pastefh(self):
         folder = self.window.notebook.get_attachments_dir(self.window.pageview.page)
         buffer = self.window.pageview.textview.get_buffer()
-        h = HTMLCDParser()
         target_and_data = get_clipboard_target_and_data()
 
         if target_and_data is not None:
@@ -90,9 +105,12 @@ class PasteFromHTMLMainWindowExtension(MainWindowExtension):
 
             if target in ["text/html", "TEXT/HTML", "HTML Format"]:
                 data = get_fragment(data)
-                buffer.insert_at_cursor(h.to_zim(data, folder))
                 cursor = self.window.pageview.get_cursor_pos()
+                h = HTMLCDParser(self.preferences['image_inside_a'])
+                buffer.insert_at_cursor(h.to_zim(data, folder))
                 self.window.pageview.set_page(self.window.pageview.page)
                 self.window.pageview.set_cursor_pos(cursor)
             else:
                 buffer.insert_at_cursor(data)
+        else:
+            buffer.insert_at_cursor(str(self.preferences))

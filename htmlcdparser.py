@@ -36,8 +36,9 @@ def get_url(url, name):
 
 # HTML Clipboard Data Parser
 class HTMLCDParser(HTMLParser):
-    def __init__(self):
+    def __init__(self, image_inside_a):
         HTMLParser.__init__(self) # super().__init__() for Pyhon 3
+        self.image_inside_a = image_inside_a
         self.zim_str = ""
         self.beg = {"h1": "====== ",
                     "h2": "===== ",
@@ -443,9 +444,12 @@ class HTMLCDParser(HTMLParser):
                 #If the image and the link match, only the image remains and the label is deleted
                 if self.inside_tag == "a" and src == self.a_href:
                     self.zim_str = self.zim_str[:len(self.zim_str)-len("[[" + self.a_href + "|")]
-                #If img inside a an <> image then prevails a
+                #If img inside a an <> image then prevails a if not image_inside_a
                 if self.inside_tag == "a" and src != self.a_href:
-                    return
+                    if self.image_inside_a:
+                        self.zim_str = self.zim_str[:len(self.zim_str)-len("[[" + self.a_href + "|")]
+                    else:
+                        return
                 qmark_index = src.find('?')
                 if qmark_index < 0:
                     qmark_index = len(src)
