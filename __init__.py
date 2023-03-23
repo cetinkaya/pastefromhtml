@@ -30,7 +30,7 @@ class PasteFromHTMLPlugin(PluginClass):
 
     plugin_preferences = (
         # key, type, label, default
-        ('image_inside_a', 'bool', _('Paste images instead of links (only for image tags <img> inside anchor tags <a>)'), False),
+        ('image_inside_a', 'bool', _('For image tags <img> inside anchor tags <a>, paste images instead of links'), False),
     )
 
 
