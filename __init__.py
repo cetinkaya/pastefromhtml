@@ -79,22 +79,9 @@ class PasteFromHTMLMainWindowExtension(MainWindowExtension):
         self.plugin.preferences.connect('changed', self.on_preferences_changed)
 
     def on_preferences_changed(self, preferences):
-        print("what")
         self.preferences = preferences
 
-    uimanager_xml = '''
-    <ui>
-    <menubar name='menubar'>
-    <menu action='tools_menu'>
-    <placeholder name='plugin_items'>
-    <menuitem action='pastefh'/>
-    </placeholder>
-    </menu>
-    </menubar>
-    </ui>
-    '''
-
-    @action(_('_Paste from HTML'), accelerator="<ctrl><shift>v")
+    @action(_('_Paste from HTML'), accelerator="<ctrl><shift>v", menuhints='tools')
     def pastefh(self):
         folder = self.window.notebook.get_attachments_dir(self.window.pageview.page)
         buffer = self.window.pageview.textview.get_buffer()
@@ -115,3 +102,7 @@ class PasteFromHTMLMainWindowExtension(MainWindowExtension):
                 buffer.insert_at_cursor(data)
             if self.preferences['reload_page']:
                 self.window.pageview.reload_page()
+
+    @action(_('_Paste from HTML'), accelerator="<ctrl><shift>v", menuhints='edit')
+    def pastefh_edit(self):
+        self.pastefh()
