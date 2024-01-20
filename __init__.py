@@ -77,6 +77,7 @@ class PasteFromHTMLMainWindowExtension(MainWindowExtension):
         self.plugin = plugin
         self.on_preferences_changed(self.plugin.preferences)
         self.plugin.preferences.connect('changed', self.on_preferences_changed)
+        self.window.pageview.textview.connect("populate-popup", self.on_populate_popup)
 
     def on_preferences_changed(self, preferences):
         self.preferences = preferences
@@ -106,3 +107,10 @@ class PasteFromHTMLMainWindowExtension(MainWindowExtension):
     @action(_('_Paste from HTML'), accelerator="<ctrl><shift>v", menuhints='edit')
     def pastefh_edit(self):
         self.pastefh()
+
+    def on_populate_popup(self, view, menu):
+        menu.append(Gtk.SeparatorMenuItem())
+        item = Gtk.MenuItem.new_with_mnemonic(_('_Paste from HTML'))
+        item.connect('activate', lambda o: self.pastefh())
+        menu.append(item)
+        menu.show_all()
