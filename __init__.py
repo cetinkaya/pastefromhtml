@@ -31,6 +31,7 @@ class PasteFromHTMLPlugin(PluginClass):
     plugin_preferences = (
         # key, type, label, default
         ('image_inside_a', 'bool', _('For image tags <img> inside anchor tags <a>, paste images instead of links'), False),
+        ('reload_page', 'bool', _('Reload page after pasting'), False),
     )
 
 
@@ -112,5 +113,5 @@ class PasteFromHTMLMainWindowExtension(MainWindowExtension):
                 self.window.pageview.set_cursor_pos(cursor)
             else:
                 buffer.insert_at_cursor(data)
-        else:
-            buffer.insert_at_cursor(str(self.preferences))
+            if self.preferences['reload_page']:
+                self.window.pageview.reload_page()
